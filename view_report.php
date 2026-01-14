@@ -7,7 +7,7 @@ include 'includes/db.php';
 $id = mysqli_real_escape_string($conn, $_GET['id']);
 
 // 2. FRESH STATUS CHECK (Critical for the Profit Logic)
-// This checks the database directly instead of just trusting the session
+// This ensures the "Blur" disappears immediately after the Paystack payment is verified
 if (isset($_SESSION['username'])) {
     $u_name = $_SESSION['username'];
     $u_check = mysqli_query($conn, "SELECT membership_status FROM users WHERE username = '$u_name'");
@@ -69,17 +69,15 @@ $is_declassified = !empty($content);
                 </div>
             <?php else: ?>
                 <div style="position: relative; min-height: 400px;">
-
                     <div style="filter: blur(12px); opacity: 0.2; user-select: none; pointer-events: none; line-height: 2;">
-                        <p>High-level intelligence gathering suggests a major shift in capital allocation within this sector. Our scrapers identified specific nodes showing anomalous behavior. By analyzing the cryptographic signatures of the recent transactions, we can conclude that a massive liquidity event is scheduled for the next 48 hours. The primary actors involved have direct ties to global offshore accounts and decentralized liquidity pools that remain undetected by standard regulatory frameworks...</p>
-                        <p>Furthermore, the decentralized nature of these assets makes them immune to traditional market circuit breakers. The potential for a 10x return exists for those who can execute entry strategies before the public declassification. Detailed wallet addresses, specific entry timeframes, and exit protocols for this specific asset class are listed below in the restricted section of this report...</p>
-                        <p>Analysis of the order books across multiple top-tier exchanges shows a significant accumulation pattern that hasn't been seen since the 2021 bull run. We have verified the whale movement through on-chain analysis and confirmed the destination wallets belong to known institutional early-adopters...</p>
+                        <p>High-level intelligence gathering suggests a major shift in capital allocation within this sector. Our scrapers identified specific nodes showing anomalous behavior. By analyzing the cryptographic signatures of the recent transactions, we can conclude that a massive liquidity event is scheduled for the next 48 hours...</p>
+                        <p>Detailed wallet addresses, specific entry timeframes, and exit protocols for this specific asset class are listed below in the restricted section of this report...</p>
                     </div>
 
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 500px; text-align: center; padding: 60px 40px; border: 1px solid var(--gold-primary); background: rgba(10, 25, 47, 0.98); z-index: 100; box-shadow: 0 20px 80px rgba(0,0,0,0.8);">
                         <h2 style="color: var(--gold-primary); font-family: 'Playfair Display', serif; margin-bottom: 15px; letter-spacing: 2px;">RESTRICTED ACCESS</h2>
                         <p style="color: var(--white-dim); font-size: 0.9rem; margin-bottom: 35px; line-height: 1.6;">
-                            Log #<?php echo $id; ?> contains actionable intelligence and market entry signals reserved for Premium Members.
+                            Log #<?php echo $id; ?> contains actionable intelligence reserved for Premium Members.
                         </p>
                         <a href="payment_gateway.php" class="btn" style="display: inline-block; padding: 18px 40px; text-decoration: none; font-weight: bold; background: var(--gold-primary); color: #0a192f;">
                             UNLOCK FULL REPORT ($29.00)

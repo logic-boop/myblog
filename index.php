@@ -113,8 +113,7 @@
     .feed-card:hover {
         background: rgba(17, 34, 64, 0.8);
         padding-left: 50px;
-        /* Moves the content slightly when hovering */
     }
 </style>
 
-<?php echo "</div></body></html>"; ?>
+<?php include 'includes/footer.php'; ?>

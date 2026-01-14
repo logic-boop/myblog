@@ -53,12 +53,21 @@ if (session_status() === PHP_SESSION_NONE) {
             box-sizing: border-box;
         }
 
+        /* ADJUSTMENT: Added flex-direction to body to fix the footer */
         body {
             background-color: var(--navy-deep);
             color: var(--white-dim);
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ADJUSTMENT: Main tag grows to push footer down */
+        main {
+            flex: 1;
         }
 
         /* ELITE NAVIGATION */
@@ -286,17 +295,20 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="network.php">Network</a></li>
             <?php endif; ?>
 
-            <li><a href="syndicate_boss_77.php">Access</a></li>
+            <?php if (isset($_SESSION['username']) && $_SESSION['username'] === 'James2000'): ?>
+                <li><a href="syndicate_boss_77.php">Access</a></li>
+            <?php endif; ?>
         </ul>
     </nav>
 
-    <div class="container">
+    <main>
+        <div class="container">
 
-        <script>
-            const menu = document.querySelector('#mobile-menu');
-            const navLinks = document.querySelector('.nav-links');
-            menu.addEventListener('click', () => {
-                menu.classList.toggle('open');
-                navLinks.classList.toggle('active');
-            });
-        </script>
+            <script>
+                const menu = document.querySelector('#mobile-menu');
+                const navLinks = document.querySelector('.nav-links');
+                menu.addEventListener('click', () => {
+                    menu.classList.toggle('open');
+                    navLinks.classList.toggle('active');
+                });
+            </script>
