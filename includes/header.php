@@ -272,6 +272,46 @@ if (session_status() === PHP_SESSION_NONE) {
             display: inline-block;
             margin-bottom: 20px;
         }
+
+        .intel-marquee {
+            width: 100%;
+            background: rgba(10, 25, 47, 0.95);
+            border-bottom: 1px solid var(--border-gold);
+            color: var(--white-pure);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            padding: 8px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-content span {
+            margin-right: 50px;
+        }
+
+        .marquee-content i {
+            font-size: 0.5rem;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(-100%, 0);
+            }
+        }
     </style>
 </head>
 
@@ -300,6 +340,18 @@ if (session_status() === PHP_SESSION_NONE) {
             <?php endif; ?>
         </ul>
     </nav>
+
+    <!-- live feed -->
+    <div class="intel-marquee">
+        <div class="marquee-content">
+            <span><i class="fas fa-bolt"></i> SYSTEM STATUS: ENCRYPTED</span>
+            <span><i class="fas fa-circle"></i> NEW REQUEST: LITHIUM FUTURES</span>
+            <span><i class="fas fa-unlock"></i> LOG #0442 DECLASSIFIED BY USER_88</span>
+            <span><i class="fas fa-signal"></i> ANOMALOUS MARKET MOVEMENT DETECTED</span>
+            <span><i class="fas fa-unlock"></i> PREMIUM ACCESS GRANTED: LOG-712</span>
+            <span><i class="fas fa-bolt"></i> $29.00 PROFIT NODE ACTIVATED</span>
+        </div>
+    </div>
 
     <main>
         <div class="container">

@@ -11,10 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // 2. DATA CAPTURE
     $id = mysqli_real_escape_string($conn, $_POST['id']);
     $content = mysqli_real_escape_string($conn, $_POST['content']);
+    
+    // NEEDFUL: Capture the category choice (Free vs Premium) from write_intel_99.php
+    $category = mysqli_real_escape_string($conn, $_POST['category']);
+
+    // Ensure special characters like ₦ or "..." save correctly
+    mysqli_set_charset($conn, "utf8mb4");
 
     // 3. THE UPDATE COMMAND
-    // This pushes your typing into the 'content' column for that specific report
-    $sql = "UPDATE submissions SET content = '$content' WHERE id = '$id'";
+    // This now saves both the text CONTENT and the CATEGORY classification
+    $sql = "UPDATE submissions SET content = '$content', category = '$category' WHERE id = '$id'";
 
     if (mysqli_query($conn, $sql)) {
         // 4. SUCCESS: Send you back to the Command Center

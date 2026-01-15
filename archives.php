@@ -20,41 +20,40 @@ include 'includes/header.php';
             </script>
         <?php endif; ?>
 
-        <?php if (isset($_GET['reg']) && $_GET['reg'] == 'success'): ?>
-            <div id="regBox" style="background: rgba(255,255,255,0.05); border: 1px solid var(--white-dim); padding: 20px; text-align: center; margin-bottom: 40px;">
-                <p style="color: var(--white-pure); font-size: 0.8rem; letter-spacing: 1px;">CONNECTION ESTABLISHED: Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>.</p>
-            </div>
-            <script>
-                setTimeout(() => {
-                    document.getElementById('regBox').style.display = 'none';
-                }, 4000);
-            </script>
-        <?php endif; ?>
-
         <div style="text-align: center; margin-bottom: 60px; animation: fadeInUp 0.8s ease-out;">
             <span class="status-badge" style="letter-spacing: 5px;">Historical Data Bank</span>
             <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--white-pure); margin-top: 15px;">
                 THE <span style="color: var(--gold-primary); font-style: italic;">ARCHIVES</span>
             </h1>
             <p style="color: var(--white-dim); font-size: 0.9rem; max-width: 600px; margin: 20px auto; line-height: 1.6;">
-                Review past intelligence logs and declassified strategic analysis. All entries are cryptographically secured.
+                Public Briefings for the masses. Elite Alpha for the Syndicate.
             </p>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding-bottom: 80px;">
             <?php
             include 'includes/db.php';
-            // Ensure symbols like ₦ or $ render correctly
             mysqli_set_charset($conn, "utf8mb4");
 
+            // Fetching all content that has been published
             $result = mysqli_query($conn, "SELECT * FROM submissions WHERE content IS NOT NULL AND content != '' ORDER BY id DESC");
 
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<div class='card archive-card' style='padding: 40px; border-bottom: 2px solid var(--border-gold); transition: 0.4s;'>";
+                    // Logic: If 'type' column is 'free', it's a Public Briefing. Else, it's Top Secret.
+                    $is_free = (isset($row['category']) && $row['category'] == 'free');
+
+                    echo "<div class='card archive-card' style='padding: 40px; border-bottom: 2px solid " . ($is_free ? "#4e5d78" : "var(--border-gold)") . "; transition: 0.4s;'>";
                     echo "<div style='display: flex; justify-content: space-between; margin-bottom: 20px;'>";
                     echo "<span style='font-family: \"JetBrains Mono\", monospace; font-size: 0.6rem; color: var(--gold-primary);'>LOG_REF: #" . str_pad($row['id'], 4, '0', STR_PAD_LEFT) . "</span>";
-                    echo "<span style='font-size: 0.6rem; color: var(--white-dim); opacity: 0.5;'>CLASS: TOP_SECRET</span>";
+
+                    // Tagging the post so users know if it's a Free Briefing or Elite Alpha
+                    if ($is_free) {
+                        echo "<span style='font-size: 0.6rem; color: #4CAF50; font-weight: bold;'>PUBLIC_BRIEFING</span>";
+                    } else {
+                        echo "<span style='font-size: 0.6rem; color: var(--accent-wine); opacity: 0.8;'>ELITE_ALPHA</span>";
+                    }
+
                     echo "</div>";
 
                     echo "<h3 style='font-family: \"Playfair Display\", serif; font-size: 1.5rem; margin-bottom: 15px;'>";
@@ -66,13 +65,12 @@ include 'includes/header.php';
                     echo substr(htmlspecialchars($row['reason']), 0, 100) . "...";
                     echo "</p>";
 
-                    echo "<a href='view_report.php?id=" . $row['id'] . "' class='archive-link'>ACCESS FILE →</a>";
+                    echo "<a href='view_report.php?id=" . $row['id'] . "' class='archive-link'>" . ($is_free ? "READ BRIEFING →" : "ACCESS FILE →") . "</a>";
                     echo "</div>";
                 }
             } else {
                 echo "<div class='card' style='grid-column: 1 / -1; text-align: center; padding: 60px;'>";
-                echo "<p style='color: var(--white-dim); font-style: italic;'>No intelligence has been declassified for the archives yet.</p>";
-                echo "<a href='index.php' class='btn' style='margin-top: 20px; display: inline-block;'>Deploy New Search</a>";
+                echo "<p style='color: var(--white-dim); font-style: italic;'>No intelligence has been declassified yet.</p>";
                 echo "</div>";
             }
             ?>
