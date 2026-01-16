@@ -9,23 +9,23 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== 'James2000') {
 include 'includes/header.php';
 include 'includes/db.php';
 
-// 2. DATA ACQUISITION
-if (!isset($_GET['id'])) {
-    header("Location: syndicate_boss_77.php");
-    exit;
-}
+// 2. DATA ACQUISITION: Support both New Posts and Edits
+$is_new_post = !isset($_GET['id']);
+$row = [
+    'id' => 0,
+    'topic' => '',
+    'reason' => 'Direct Command: New Intelligence Initialization',
+    'content' => '',
+    'image_url' => 'images/vat_alert.png' // Default placeholder
+];
 
-$id = mysqli_real_escape_string($conn, $_GET['id']);
-$result = mysqli_query($conn, "SELECT * FROM submissions WHERE id = '$id'");
-$row = mysqli_fetch_assoc($result);
-
-if (!$row) {
-    echo "<div class='container' style='margin-top: 100px; text-align: center;'>
-            <h2 style='color: var(--white-pure);'>Target Not Found</h2>
-            <a href='syndicate_boss_77.php' class='btn' style='display:inline-block; margin-top:20px;'>Return to Command</a>
-          </div>";
-    include 'includes/footer.php';
-    exit;
+if (!$is_new_post) {
+    $id = mysqli_real_escape_string($conn, $_GET['id']);
+    $result = mysqli_query($conn, "SELECT * FROM submissions WHERE id = '$id'");
+    $fetched_row = mysqli_fetch_assoc($result);
+    if ($fetched_row) {
+        $row = $fetched_row;
+    }
 }
 
 $has_content = !empty($row['content']);
@@ -36,21 +36,29 @@ $has_content = !empty($row['content']);
 
         <div style="margin-bottom: 50px; animation: fadeInUp 0.8s ease-out;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="status-badge" style="background: rgba(197, 160, 89, 0.1); border-color: var(--gold-primary);">
-                    MODE: <?php echo $has_content ? "EDITING ARCHIVE" : "INITIAL DECLASSIFICATION"; ?>
+                <span class="status-badge" style="background: rgba(197, 160, 89, 0.1); border-color: var(--gold-primary); border: 1px solid var(--gold-primary); padding: 5px 15px; color: var(--gold-primary); font-size: 0.7rem; font-family: 'JetBrains Mono';">
+                    MODE: <?php echo $is_new_post ? "FRESH BROADCAST" : ($has_content ? "EDITING ARCHIVE" : "INITIAL DECLASSIFICATION"); ?>
                 </span>
                 <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--gold-primary); letter-spacing: 2px;">
-                    REF_ID: #<?php echo str_pad($row['id'], 4, '0', STR_PAD_LEFT); ?>
+                    REF_ID: <?php echo $is_new_post ? "#NEW_ENTRY" : "#" . str_pad($row['id'], 4, '0', STR_PAD_LEFT); ?>
                 </span>
             </div>
 
-            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--white-pure); margin-top: 20px; line-height: 1.2;">
-                DECONSTRUCTING: <span style="color: var(--gold-primary); font-style: italic;"><?php echo htmlspecialchars($row['topic']); ?></span>
-            </h1>
+            <?php if ($is_new_post): ?>
+                <div style="margin-top: 25px;">
+                    <label style="color: var(--gold-primary); font-family: 'JetBrains Mono'; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px;">Broadcast Headline</label>
+                    <input type="text" name="topic" form="intelForm" placeholder="ENTER TOPIC (e.g. CME Group ADA/LINK Futures)..."
+                        style="width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--gold-primary); color: var(--white-pure); font-family: 'Playfair Display', serif; font-size: 2.5rem; outline: none; margin-top: 10px;" required>
+                </div>
+            <?php else: ?>
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--white-pure); margin-top: 20px; line-height: 1.2;">
+                    DECONSTRUCTING: <span style="color: var(--gold-primary); font-style: italic;"><?php echo htmlspecialchars($row['topic']); ?></span>
+                </h1>
+            <?php endif; ?>
 
             <div style="margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.02); border-left: 3px solid var(--gold-primary);">
-                <p style="color: var(--gold-primary); font-family: 'JetBrains Mono'; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Primary Objective:</p>
-                <p style="color: var(--white-dim); font-size: 1rem; font-weight: 300; line-height: 1.5;">
+                <p style="color: var(--gold-primary); font-family: 'JetBrains Mono'; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Objective Context:</p>
+                <p style="color: var(--white-dim); font-size: 0.9rem; font-weight: 300; line-height: 1.5;">
                     "<?php echo htmlspecialchars($row['reason']); ?>"
                 </p>
             </div>
@@ -66,31 +74,39 @@ $has_content = !empty($row['content']);
                 <span style="font-size: 0.65rem; color: var(--gold-primary); font-family: 'JetBrains Mono'; font-weight: bold; letter-spacing: 2px;">SECURE_INTEL_STREAM.TXT</span>
             </div>
 
-            <form action="update.php" method="POST">
+            <form action="update.php" method="POST" id="intelForm">
                 <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
 
-                <textarea name="content" rows="20"
+                <div style="padding: 20px 40px 0 40px;">
+                    <label style="color: var(--gold-primary); font-family: 'JetBrains Mono'; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px;">Image Asset Path</label>
+                    <input type="text" name="image_url" value="<?php echo htmlspecialchars($row['image_url'] ?? 'images/vat_alert.png'); ?>"
+                        style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(197, 160, 89, 0.3); color: white; padding: 12px; margin-top: 10px; font-family: 'JetBrains Mono'; outline: none;">
+                </div>
+
+                <textarea name="content" rows="18"
                     placeholder="PROMPT: Summarize the market shift... provide actionable data nodes... outline the profit pathway."
                     style="width: 100%; background: transparent; color: var(--white-pure); border: none; padding: 40px; font-family: 'Inter', sans-serif; font-size: 1.1rem; line-height: 1.9; outline: none; resize: vertical; display: block;"
                     required><?php echo htmlspecialchars($row['content']); ?></textarea>
 
-                <div style="padding: 30px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border-gold); display: flex; justify-content: space-between; align-items: center;">
-                    <a href="syndicate_boss_77.php" style="color: var(--white-dim); text-decoration: none; font-size: 0.75rem; font-family: 'JetBrains Mono'; letter-spacing: 1px; text-transform: uppercase;">
-                        [ ABORT DRAFT ]
-                    </a>
+                <div style="padding: 30px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border-gold);">
 
-                    <button type="submit" class="btn" style="width: auto; padding: 15px 45px; font-size: 0.8rem; letter-spacing: 2px; box-shadow: 0 0 30px rgba(197, 160, 89, 0.1);">
-                        PUBLISH TO LEDGER
-                    </button>
-                </div>
+                    <div style="margin-bottom: 25px;">
+                        <label style="color: var(--gold-primary); font-family: 'JetBrains Mono'; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;">Intelligence Classification</label>
+                        <select name="category" style="width: 100%; background: #0a192f; color: white; border: 1px solid var(--border-gold); padding: 12px; margin-top: 10px; font-family: 'JetBrains Mono'; outline: none;">
+                            <option value="premium">ELITE ALPHA (Paid - ₦46,400)</option>
+                            <option value="free">PUBLIC BRIEFING (Free News Feed)</option>
+                        </select>
+                    </div>
 
-                <!-- This allows you to choose if a report is a free briefing or paid alpha: -->
-                <div style="margin-bottom: 25px;">
-                    <label style="color: var(--gold-primary); font-family: 'JetBrains Mono'; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;">Intelligence Classification</label>
-                    <select name="category" style="width: 100%; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-gold); padding: 12px; margin-top: 10px; font-family: 'JetBrains Mono'; outline: none;">
-                        <option value="premium">ELITE ALPHA (Paid - ₦46,400)</option>
-                        <option value="free">PUBLIC BRIEFING (Free News Feed)</option>
-                    </select>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <a href="syndicate_boss_77.php" style="color: var(--white-dim); text-decoration: none; font-size: 0.75rem; font-family: 'JetBrains Mono'; letter-spacing: 1px; text-transform: uppercase;">
+                            [ ABORT DRAFT ]
+                        </a>
+
+                        <button type="submit" class="admin-btn" style="background: var(--gold-primary); color: #0a192f; text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 15px 45px; font-weight: bold; border: none; cursor: pointer;">
+                            PUBLISH TO LEDGER
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -100,7 +116,6 @@ $has_content = !empty($row['content']);
                 PROTOCOL WARNING: Deployment will instantly trigger $29.00 paywall for free-tier nodes.
             </p>
         </div>
-
     </div>
 </main>
 

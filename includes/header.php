@@ -2,6 +2,16 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// DYNAMIC META LOGIC: Fetch intelligence details for SEO if an ID exists
+$pageTitle = "ALPHA LEDGER | Elite Intelligence";
+$metaDesc = "Access declassified market intelligence and elite profit nodes. Secure your 5% market edge.";
+
+if (isset($_GET['id'])) {
+    // Note: Since I don't have your DB config here, this is a placeholder. 
+    // It ensures your site looks professional even before the DB fetch.
+    $pageTitle = "DECLASSIFIED: Intel Log #" . htmlspecialchars($_GET['id']) . " | Alpha Ledger";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +19,15 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALPHA LEDGER | Elite Intelligence</title>
+
+    <title><?php echo $pageTitle; ?></title>
+    <meta name="description" content="<?php echo $metaDesc; ?>">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?php echo $pageTitle; ?>">
+    <meta property="og:description" content="<?php echo $metaDesc; ?>">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -341,7 +359,6 @@ if (session_status() === PHP_SESSION_NONE) {
         </ul>
     </nav>
 
-    <!-- live feed -->
     <div class="intel-marquee">
         <div class="marquee-content">
             <span><i class="fas fa-bolt"></i> SYSTEM STATUS: ENCRYPTED</span>

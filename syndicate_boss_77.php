@@ -31,6 +31,9 @@ $total_intel = $intel_data['total'];
         <div>
             <span class="status-badge" style="background: rgba(197, 160, 89, 0.1); border-color: var(--gold-primary);">Auth Level: Administrator</span>
             <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--white-pure); margin-top: 10px;">COMMAND <span style="color: var(--gold-primary); font-style: italic;">CENTER</span></h1>
+            <a href="write_intel_99.php" class="admin-btn" style="background: var(--gold-primary); color: #0a192f; margin-bottom: 20px;">
+                [+] LAUNCH NEW BROADCAST
+            </a>
         </div>
         <div style="text-align: right;">
             <div style="font-family: 'JetBrains Mono', monospace; color: var(--gold-primary); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 5px;">ESTIMATED ASSET VALUE</div>
