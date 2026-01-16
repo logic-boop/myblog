@@ -12,8 +12,16 @@
   },
   "routes": [
     {
+      "src": "/update.php",
+      "dest": "/includes/update.php"
+    },
+    {
+      "src": "/write_intel_99.php",
+      "dest": "/includes/write_intel_99.php"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/api/index.php"
+      "dest": "/$1"
     }
   ]
 }
