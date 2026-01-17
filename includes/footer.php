@@ -1,6 +1,7 @@
+</div>
 </main>
 <footer style="margin-top: 100px; padding: 80px 20px; border-top: 1px solid rgba(197, 160, 89, 0.1); background: rgba(6, 13, 26, 0.98); flex-shrink: 0;">
-    <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; animation: none;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
 
         <div>
             <h2 style="color: var(--white-pure); font-family: 'Playfair Display', serif; font-size: 1.5rem; letter-spacing: 1px;">ALPHA<span style="color: var(--gold-primary);">LEDGER</span></h2>
@@ -30,7 +31,7 @@
 </footer>
 
 <style>
-    /* Small hover effect for footer links */
+    /* Global Footer Link Hover */
     footer ul li a:hover {
         color: var(--gold-primary) !important;
         padding-left: 5px;
